@@ -1,6 +1,7 @@
-﻿FROM golang:1.20-alpine AS build
+FROM golang:1.20-alpine AS build
 WORKDIR /app
-COPY go.mod go.sum ./
+# Copy only go.mod first so the build doesn't fail when go.sum is absent.
+COPY go.mod ./
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -o notifier main.go
