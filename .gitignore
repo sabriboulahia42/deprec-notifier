@@ -6,3 +6,4 @@ notifier.db
 *.log
 data/
 .DS_Store
+*.ps1
