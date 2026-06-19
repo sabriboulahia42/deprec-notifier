@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 watch:
+=======
+﻿watch:
+>>>>>>> sync/laptop
   - id: node-14
     name: "Node.js 14.x"
     language: "node"
