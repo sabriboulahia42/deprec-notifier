@@ -1,4 +1,4 @@
-﻿#!/bin/sh
+#!/bin/sh
 set -e
 
 # If ENCRYPTED_ENV is set, decrypt it
