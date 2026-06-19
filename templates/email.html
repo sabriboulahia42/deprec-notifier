@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Deprecation notice</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#f6f9fc; color:#111; padding:20px; margin:0; }
+    .card { max-width:720px; margin:0 auto; background:#fff; border-radius:12px; padding:22px; box-shadow:0 8px 28px rgba(8,14,30,0.06); overflow:hidden; }
+    h1 { color:#07203a; font-size:20px; margin:0 0 8px; }
+    p { line-height:1.45; margin:8px 0; }
+    ul { margin:8px 0; padding-left:20px; }
+    li { margin:6px 0; }
+    a { color:#0a66c2; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .notice { background:#fff8ed; border-left:5px solid #ffb020; padding:12px; border-radius:6px; margin:14px 0; }
+    .cta { display:inline-block; margin-top:14px; padding:10px 16px; background:#0a66c2; color:#fff; text-decoration:none; border-radius:8px; font-weight:600; }
+    .cta:hover { background:#084a9d; }
+    small { color:#666; display:block; margin-top:12px; font-size:12px; }
+
+    .hero { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
+    .logo-wrap { width:86px; height:86px; flex:0 0 86px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:linear-gradient(135deg,#e6f0ff,#f3f8ff); }
+    .title-wrap { flex:1; }
+    .pulse { animation: pulse 2.4s ease-in-out infinite; transform-origin:center; }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity:1; }
+      50% { transform: scale(1.06); opacity:.92; }
+      100% { transform: scale(1); opacity:1; }
+    }
+
+    @media (max-width:480px) {
+      .card { padding:16px; }
+      .hero { gap:10px; }
+      .logo-wrap { width:64px; height:64px; }
+      h1 { font-size:18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="article" aria-label="Deprecation notice">
+    <div class="hero">
+      <div class="logo-wrap" aria-hidden="true">
+        <svg class="pulse" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Deprecation alert">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0a66c2"/>
+              <stop offset="100%" stop-color="#2fb8ff"/>
+            </linearGradient>
+          </defs>
+          <rect rx="12" width="64" height="64" fill="url(#grad1)"/>
+          <g transform="translate(32,32)">
+            <circle r="10" fill="#fff" opacity="0.1"/>
+            <circle r="6" fill="#fff"/>
+            <path d="M-2,-14 L2,-14 L2,-10 L-2,-10 Z" fill="#ffffff" opacity="0.15">
+              <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="10s" repeatCount="indefinite"/>
+            </path>
+          </g>
+        </svg>
+      </div>
+      <div class="title-wrap">
+        <h1>Important: Runtime deprecation approaching</h1>
+        <div style="color:#425a70; font-size:13px;">We monitor runtimes and notify when a version nears End-of-Life.</div>
+      </div>
+    </div>
+
+    <div class="notice">
+      <p>The interpreter <strong>{{.Name}} ({{.CurrentVersion}})</strong> is scheduled to be deprecated in approximately <strong>{{.YearsLeft}} years ({{.DaysLeft}} days)</strong>.</p>
+    </div>
+
+    <p>We recommend upgrading to the latest supported LTS/stable versions:</p>
+    <ul>
+      <li><strong>{{.Recommended}}</strong></li>
+      <li>Node.js: <a href="https://nodejs.org/" target="_blank" rel="noopener">https://nodejs.org/</a></li>
+      <li>Python: <a href="https://www.python.org/" target="_blank" rel="noopener">https://www.python.org/</a></li>
+    </ul>
+
+    <a class="cta" href="https://nodejs.org/" target="_blank" rel="noopener">🚀 How to upgrade</a>
+
+    <small>Animations may not display in all email clients (Outlook, some mobile apps). This is normal and does not affect the message content. For web viewing, animations are fully supported.</small>
+  </div>
+</body>
+</html>
