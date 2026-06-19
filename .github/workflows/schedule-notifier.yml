@@ -1,0 +1,60 @@
+﻿name: Scheduled Deprecation Notifier
+
+on:
+  schedule:
+    - cron: '\''0 9 * * *'\''    # daily at 09:00 UTC (adjust as needed)
+  workflow_dispatch:
+
+jobs:
+  run-notifier:
+    runs-on: ubuntu-latest
+    env:
+      MAILERSEND_FROM_EMAIL: ${{ secrets.MAILERSEND_FROM_EMAIL }}
+      NOTIFY_TO_EMAIL: ${{ secrets.NOTIFY_TO_EMAIL }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '\''1.20'\''
+
+      - name: Build helper and app
+        run: |
+          go build -o envcrypt encrypt_decrypt.go
+          go build -o notifier main.go
+
+      - name: Decrypt ENCRYPTED_ENV to .env (if provided)
+        if: ${{ secrets.ENCRYPTED_ENV != '\''' && secrets.PRIVATE_KEY_B64 != '\''' }}
+        run: |
+          echo "${{ secrets.ENCRYPTED_ENV }}" > .env.enc
+          export PRIVATE_KEY_B64="${{ secrets.PRIVATE_KEY_B64 }}"
+          ./envcrypt decrypt .env.enc .env
+          echo "[actions] decrypted .env from ENCRYPTED_ENV"
+
+      - name: Compose .env from individual secrets (if no ENCRYPTED_ENV)
+        if: ${{ secrets.ENCRYPTED_ENV == '\''' }}
+        run: |
+          cat > .env <<'EOF'
+          MAILERSEND_API_KEY=${{ secrets.MAILERSEND_API_KEY }}
+          MAILERSEND_FROM_EMAIL=${{ secrets.MAILERSEND_FROM_EMAIL }}
+          NOTIFY_TO_EMAIL=${{ secrets.NOTIFY_TO_EMAIL }}
+          DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}
+          FB_PAGE_ACCESS_TOKEN=${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_RECIPIENT_ID=${{ secrets.FB_RECIPIENT_ID }}
+          EOF
+          echo "[actions] composed .env from individual secrets"
+
+      - name: Run notifier (run once)
+        run: |
+          chmod +x ./notifier
+          ./notifier --run-once
+
+      - name: Upload log artifact (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notifier-logs
+          path: |
+            ./notifier.log

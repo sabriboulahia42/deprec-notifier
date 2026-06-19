@@ -1,0 +1,9 @@
+﻿app = "deprecation-notifier"
+
+[build]
+  # If you want Fly to build from local Dockerfile, remove the image line.
+  # You can leave this line to deploy by image built by GitHub Actions.
+  image = "ghcr.io/REPLACE_WITH_YOUR_GH_USER/deprecation-notifier:latest"
+
+[env]
+  # runtime environment variables are set via fly secrets, not here

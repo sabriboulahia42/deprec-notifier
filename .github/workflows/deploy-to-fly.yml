@@ -1,0 +1,63 @@
+﻿name: Build and deploy to Fly
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.build.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/deprecation-notifier:${{ github.sha }}
+          outputs: type=registry,ref=ghcr.io/${{ github.repository_owner }}/deprecation-notifier:${{ github.sha }}
+
+      - name: Set output image
+        run: echo "::set-output name=image::ghcr.io/${{ github.repository_owner }}/deprecation-notifier:${{ github.sha }}"
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@v1
+        with:
+          version: latest
+
+      - name: Login to Fly
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          flyctl auth token && echo "logged in"
+
+      - name: Deploy to Fly using built image
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          IMAGE="ghcr.io/${{ github.repository_owner }}/deprecation-notifier:${{ github.sha }}"
+          APP="deprecation-notifier"  # change to your fly app name if different
+          echo "Deploying $IMAGE to Fly app $APP"
+          flyctl deploy --app $APP --image $IMAGE --region sjc || flyctl deploy --app $APP --image $IMAGE
