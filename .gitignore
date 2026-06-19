@@ -1,0 +1,8 @@
+﻿# Binaries, secrets and local data
+.env
+.env.decoded
+.env.enc
+notifier.db
+*.log
+data/
+.DS_Store

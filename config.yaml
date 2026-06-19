@@ -1,0 +1,30 @@
+﻿watch:
+  - id: node-14
+    name: "Node.js 14.x"
+    language: "node"
+    current_version: "14.x"
+    deprecation_date: "2027-09-01"
+    recommended: "Use the latest Node.js LTS and update npm."
+
+  - id: python-3.8
+    name: "Python 3.8"
+    language: "python"
+    current_version: "3.8"
+    deprecation_date: "2027-12-01"
+    recommended: "Move to Python 3.11 or later."
+
+  - id: python-3.9
+    name: "Python 3.9"
+    language: "python"
+    current_version: "3.9"
+    deprecation_date: "2028-10-05"
+    recommended: "Upgrade to Python 3.11, 3.12, or later."
+
+channels:
+  email:
+    from: "noreply@example.com"
+    subject_template: "⚠️ Deprecation notice: {{.Name}} in {{.YearsLeft}} years"
+  discord:
+    enabled: true
+  messenger:
+    enabled: false
